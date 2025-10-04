@@ -97,7 +97,7 @@ public class NumberTriangle {
         if (direction == 'l') {
             return left.retrieve(remainingPath);
         }
-        else if (direction == 'r') {
+        else{
             return right.retrieve(remainingPath);
         }
     }
