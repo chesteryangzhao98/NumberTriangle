@@ -1,5 +1,6 @@
 import java.io.*;
-
+import java.util.ArrayList;
+import java.util.List;
 /**
  * This is the provided NumberTriangle class to be used in this coding task.
  *
@@ -88,8 +89,17 @@ public class NumberTriangle {
      *
      */
     public int retrieve(String path) {
-        // TODO implement this method
-        return -1;
+        if (path.isEmpty()) {
+            return this.root;
+        }
+        char direction = path.charAt(0);
+        String remainingPath = path.substring(1);
+        if (direction == 'l') {
+            return left.retrieve(remainingPath);
+        }
+        else if (direction == 'r') {
+            return right.retrieve(remainingPath);
+        }
     }
 
     /** Read in the NumberTriangle structure from a file.
@@ -110,20 +120,34 @@ public class NumberTriangle {
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 
 
-        // TODO define any variables that you want to use to store things
-
+        List<NumberTriangle> previousRow = null;
         // will need to return the top of the NumberTriangle,
         // so might want a variable for that.
         NumberTriangle top = null;
 
         String line = br.readLine();
         while (line != null) {
+            line = line.trim();
+            String[] numbers = line.split("\\s+");
+            List<NumberTriangle> currentRow = new ArrayList<>();
+            for (String numStr : numbers) {
+                int value = Integer.parseInt(numStr);
+                NumberTriangle node = new NumberTriangle(value);
+                currentRow.add(node);
+            }
+            if (top == null) {
+                top = currentRow.get(0);
+            }
+            if (previousRow != null) {
+                for (int i = 0; i < previousRow.size(); i++) {
+                    // 第i个父节点的左子节点是当前行的第i个节点
+                    previousRow.get(i).setLeft(currentRow.get(i));
+                    // 第i个父节点的右子节点是当前行的第i+1个节点
+                    previousRow.get(i).setRight(currentRow.get(i + 1));
+                }
+            }
 
-            // remove when done; this line is included so running starter code prints the contents of the file
-            System.out.println(line);
-
-            // TODO process the line
-
+            previousRow = currentRow;
             //read the next line
             line = br.readLine();
         }
